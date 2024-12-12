@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+            body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        #chatButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #chatButton:hover {
+            background-color: #45a049;
+        }
+        #chatbox {
+            width: 500px;
+            height: 700px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            bottom: 0px;
+            right: 0px;
+            display: none;
+            position: fixed;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        #chatHeader {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #closeButton {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        iframe {
+            border: none;
+        }
+
+       
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h2>Trykk på knappen under for å snakke med chat boten om oppskrifter</h2><br>
+        <br><button id="chatButton" onclick="toggleChat()">Åpne Chat</button>
+    </div>
+
+    <div id="chatbox">
+        <div id="chatHeader">
+            <span>Chat med oss</span>
+            <button id="closeButton" onclick="toggleChat()">×</button>
+        </div>
+        <iframe 
+            src="https://copilotstudio.microsoft.com/environments/Default-1b6bba49-6f35-4d82-9fca-4827d417cd3e/bots/crc1e_oppskrifter/webchat?__version__=2" 
+            width="100%" 
+            height="90%" 
+            frameborder="0">
+        </iframe>
+    </div>
+
+
+
+    <script>
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+        const chatbox = document.getElementById('chatbox');
+        const chatHeader = document.getElementById('chatHeader');
+
+        function toggleChat() {
+            chatbox.style.display = 
+                chatbox.style.display === 'none' ? 'block' : 'none'; // Ternary operator  
+        }
+
+        chatHeader.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            if (e.target === chatHeader) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, chatbox);
+            }
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+
+            isDragging = false;
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+    </script>
+</body>
+</html>
